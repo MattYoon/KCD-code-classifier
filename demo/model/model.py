@@ -2,21 +2,15 @@ import os
 from os import listdir
 from os.path import isfile, join
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from gensim.models import FastText
-from pytorch_lightning import LightningModule, Trainer
-from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+from pytorch_lightning import LightningModule
 import numpy as np
 import re
 import torch
 from torch import nn
 from torch.nn import functional as F
-from torch.utils.data import Dataset, DataLoader
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-from torchmetrics.functional.classification.accuracy import accuracy
-from transformers import ElectraTokenizer, ElectraModel, RobertaModel, RobertaTokenizer, AutoTokenizer, BertTokenizer
+from transformers import RobertaModel, BertTokenizer
 from Preprocessor import Preprocessor
 
 
