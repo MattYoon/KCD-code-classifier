@@ -89,7 +89,7 @@ class MedClassifier(LightningModule):
         y = self.fnn1(sent_emb)
         logit = F.log_softmax(y, dim=1)
         _, top_n_preds = torch.topk(logit, k=5, dim=1)
-        return self.label_encoder.inverse_transform(top_n_preds[0])
+        return self.label_encoder.inverse_transform(top_n_preds[0]).tolist()
 
 def infer(x):
     return model(x)
@@ -99,4 +99,3 @@ dirpath = 'checkpoint/'
 checkpoint_filename = [f for f in listdir(dirpath) if isfile(join(dirpath, f))][0]
 model = MedClassifier.load_from_checkpoint(dirpath + checkpoint_filename)
 print('Model Loaded')
-print(model('진단명 주 확정 OMI old myocardial infarction. 진단명 부 확정 Hypertensive heart disease NOS. 진단명 부 확정 Hyperlipidemia, unspecified. 진단명 부 확정 Type 2 diabetes mellitus, with unspecified complications.'))
