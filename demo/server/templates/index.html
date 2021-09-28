@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MRC DEMO</title>
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <!-- <script src="/static/Number-Rolling-Animation-jQuery-numberAnimate/numberAnimate.js"></script> -->
+
+        <style>
+            html, body{
+                background-color: black;
+                color:#fff;
+            }
+            div,h1, h2, h3{
+                text-align: center;
+            }
+            h1{
+                font-size:60px;
+                border-bottom: 1px solid #eee;
+
+            }
+/*             .game-box img{
+                width:100%;
+                
+            } */
+            button{
+                width: 100%;
+                height: 100px;
+            }
+            p{
+                font-size:15px;
+            }
+            #value{
+                font-size: 100px;
+
+            }
+            #question-section{
+                transition: opacity 0s, opacity 0.5s linear;
+            }
+            #spinner{
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+            @media only screen and (max-device-width: 768px) {
+                h2{
+                    font-size:40px;
+                }
+                p{
+                    font-size:50px;
+                }
+                button{
+                    font-size:45px !important;
+                }
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" style="padding:20px;">
+                <h1>MRC DEMO</h1>
+            </div>
+            <p style="font-size:20px;">
+                한국어 MRC 모델의 데모 사이트입니다.<br>
+            </p>
+            <button type="button" id='start-btn' class="btn btn-primary btn-lg">START</button>
+            <div class="spinner-grow" id='spinner' role="status" style="display:none;">
+                <span class="sr-only"></span>
+            </div>
+            <div class="row justify-content-lg-center">
+                <div class="col col-lg-auto" id="question-section" style="opacity:0" data-started='false'>
+                    <h2>질문을 입력하세요</h2>
+                    <div class="game-box">
+                        <div class="">
+                            <input type="text" id="input_query" style="width:600px;height:200px;">
+                        </div>
+                        <div class="row justify-content-lg-center" style="margin-top:20px;">
+                            <div class="col-sm-6">
+                                <button type="button" data-answer='1' class="btn btn-primary btn-lg answer-btn">입력</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row justify-content-lg-center">
+                <div class="col col-lg-auto" id="answer-section" style="opacity:0" data-started='false'>
+                    <h2>지문</h2>
+                    <div class="answer-box">
+                        <div class="">
+                            <textarea name="content" cols="40" rows="10" id="context" style="width:600px;height:200px;margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;" readonly>
+                            </textarea>
+                        </div>                
+                    <h2><br>정답</h2>
+                        <div class="">
+                            <textarea name="content" cols="40" rows="10" id="answer0" style="width:600px;height:200px;margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;" readonly> </textarea>
+                            <textarea name="content" cols="40" rows="10" id="answer1" style="width:600px;height:200px;margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;" readonly> </textarea>
+                            <textarea name="content" cols="40" rows="10" id="answer2" style="width:600px;height:200px;margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;" readonly> </textarea>
+                            <textarea name="content" cols="40" rows="10" id="answer3" style="width:600px;height:200px;margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;" readonly> </textarea>
+                            <textarea name="content" cols="40" rows="10" id="answer4" style="width:600px;height:200px;margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;" readonly> </textarea>                            
+                        </div>
+                        <div id="result" style="display:none;">
+                            <p><br>새로고침 후에 다시 시도해보세요!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script>
+            var question = "";
+            var context = "";
+            var answer0 = "";
+            var answer1 = "";
+            var answer2 = "";
+            var answer3 = "";
+            var answer4 = "";
+            
+            function get_score(){
+                // 문제 풀이 데이터 -> json
+                // get_score : resource path
+                fetch('/get_score', {
+                    method: 'POST', // or 'PUT'
+                    body: JSON.stringify(question), // data can be `string` or {object}!
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .then(response => {
+                    print(response)
+                    context = response['context']
+                    answer0 = response['0']
+                    answer1 = response['1']
+                    answer2 = response['2']
+                    answer3 = response['3']
+                    answer4 = response['4']
+                    document.querySelector("#spinner").style.display = 'none';
+                    document.querySelector("#question-section").style.display = 'none';
+                    document.querySelector("#result").style.display = 'block';
+                    document.querySelector("#answer-section").style.opacity = 1;
+                    document.querySelector("#answer-section").dataset.started = true;
+                    document.getElementById("context").value = context
+                    document.getElementById("answer0").value = answer0
+                    document.getElementById("answer1").value = answer1
+                    document.getElementById("answer2").value = answer2
+                    document.getElementById("answer3").value = answer3
+                    document.getElementById("answer4").value = answer4
+                    
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            var isClciked = false;
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('.btn')) return;
+                if (event.target.closest('.answer-btn')){
+                    if (isClciked) return;
+                    isClciked=true;
+                    
+                    event.target.dataset.clicked = true;
+                    question = document.getElementById("input_query").value;
+//                     window.alert(question);
+//                     var query = 
+//                     var index = parseInt(document.querySelector("#q-number").innerHTML);
+                    setTimeout(function(){
+                        get_score();
+                    },1000);
+                    document.querySelector("#spinner").style.display = 'inline-block';
+                    document.querySelector("#question-section").style.opacity = 0;
+                }else if (event.target.closest('#start-btn')){
+                    document.querySelector("#question-section").dataset.started = true;
+                    document.querySelector("#start-btn").style.display = 'none';
+//                     document.querySelector("#spinner").style.display = 'inline-block';
+//                     document.querySelector("#spinner").style.display = 'none';
+                    document.querySelector("#question-section").style.opacity = 1;
+                    isClciked=false;
+//                     set_question(0);
+                }
+            });
+            
+
+//             if (document.querySelector("#question-section").dataset.started =='true'){
+//                 document.querySelector("#spinner").style.display = 'none';
+//                 document.querySelector("#question-section").style.opacity = 1;
+//                 isClciked=false;
+//             }
+
+            // function animateValue(id, start, end, duration) {
+            //     if (start === end) return;
+            //     var range = end - start;
+            //     var current = start;
+            //     var increment = end > start? 1 : -1;
+            //     var stepTime = Math.abs(Math.floor(duration / range));
+            //     var obj = document.getElementById(id);
+            //     var timer = setInterval(function() {
+            //         current += increment;
+            //         obj.innerHTML = current;
+            //         if (current == end) {
+            //             clearInterval(timer);
+            //         }
+            //     }, stepTime);
+            // }
+
+        
+        </script>
+    </body>
+</html>

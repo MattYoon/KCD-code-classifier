@@ -11,8 +11,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from transformers import RobertaModel, BertTokenizer
-from Preprocessor import Preprocessor
-
+from .Preprocessor import Preprocessor
 
 class Tokenizer:
     def __init__(self, bert_tokenizer, w2v):
@@ -55,13 +54,13 @@ class MedClassifier(LightningModule):
 
         self.bert_tokenizer = BertTokenizer.from_pretrained('klue/roberta-large')
         print('Loading W2V, may take some time > 5 minutes')
-        self.w2v = FastText.load('FT_300/ft_oa_all_300d.bin')
+        self.w2v = FastText.load('demo/model/FT_300/ft_oa_all_300d.bin')
         self.preprocessor = Preprocessor()
         self.tokenizer = Tokenizer(self.bert_tokenizer, self.w2v)
 
         self.config = RobertaModel.from_pretrained('klue/roberta-large').config
         self.label_encoder = LabelEncoder()
-        df = pd.read_csv('data_no_sparse.csv')
+        df = pd.read_csv('demo/model/data_no_sparse.csv')
         self.label_encoder.fit(df['진단코드'])
 
         self.bert = RobertaModel(self.config)
@@ -89,7 +88,7 @@ def infer(x):
     return model(x)
 
 print('Loading Model')
-dirpath = 'checkpoint/'
+dirpath = 'demo/model/checkpoint/'
 checkpoint_filename = [f for f in listdir(dirpath) if isfile(join(dirpath, f))][0]
 model = MedClassifier.load_from_checkpoint(dirpath + checkpoint_filename)
 print('Model Loaded')
