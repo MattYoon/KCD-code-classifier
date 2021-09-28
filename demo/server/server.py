@@ -8,14 +8,14 @@ import sys, os
 from ..model.model import infer
 import pickle
 
- # -- coding: utf-8 --
+# -- coding: utf-8 --
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 # load data
-with open('demo/pickle/code2cate.pickle', 'rb') as fr:
+with open('demo/pickle/code2cate2.pickle', 'rb') as fr:
     code2cate = pickle.load(fr)
-with open('demo/pickle/code2name.pickle', 'rb') as fr:
+with open('demo/pickle/code2name2.pickle', 'rb') as fr:
     code2name = pickle.load(fr)
 
 # 뒤에 resource path X, 브라우저 접근
@@ -29,7 +29,16 @@ def get_score():
     data = str(request.json)
     print(data)
     result = infer(data)
-    json_data = {str(idx):f"({value}) {code2name[value]} - {code2cate[value]}" for idx, value in enumerate(result)}
+    """
+    Key : value
+    context : 증상 입력 값
+    0~4 code (5개) : 진단 코드
+    0~4 name (5개) : 진단명
+    0~4 category (5개) : 진단 카테고리
+    """
+    json_data = {f"{idx} code" : value for idx, value in enumerate(result)}
+    json_data.update({f"{idx} name" : code2name[value] for idx, value in enumerate(result)})
+    json_data.update({f"{idx} category" : code2cate[value] for idx, value in enumerate(result)})
     json_data['context'] = data
     print(json_data)
     send = json.dumps(json_data)
