@@ -60,14 +60,14 @@ class MedClassifier(LightningModule):
 
         self.config = RobertaModel.from_pretrained('klue/roberta-large').config
         self.label_encoder = LabelEncoder()
-        df = pd.read_csv('demo/model/data_no_sparse.csv')
+        df = pd.read_csv('demo/server/data_no_sparse2.csv')
         self.label_encoder.fit(df['진단코드'])
 
         self.bert = RobertaModel(self.config)
         self.fnn1 = nn.Sequential(
             nn.Linear(1324, 1200),
             nn.PReLU(),
-            nn.Linear(1200, 1084)
+            nn.Linear(1200, 956)
         )
 
     def forward(self, x):

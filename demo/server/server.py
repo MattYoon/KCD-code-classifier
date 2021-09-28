@@ -2,9 +2,6 @@ from re import template
 from flask import Flask, render_template
 from flask import request
 import json
-import sys, os
-# sys.path.insert(0, '/home/konkuk/KCD-code-classifier/demo/model/')
-# sys.path.append('/home/konkuk/KCD-code-classifier/demo/model/')
 from ..model.model import infer
 import pickle
 
