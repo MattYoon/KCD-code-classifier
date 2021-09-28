@@ -3,3 +3,6 @@
 
 ## 서버 실행 명령어
 `~/KCD-code-classifier`에서 `python -m demo.server.server`실행
+
+## 모델 구조
+![alt text](https://github.com/MattYoon/KCD-code-classifier/blob/main/model.png?raw=true)
