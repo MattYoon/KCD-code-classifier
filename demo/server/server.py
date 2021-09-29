@@ -1,5 +1,6 @@
 from re import template
 from flask import Flask, render_template
+from flask_cors import CORS
 from flask import request
 import json
 from ..model.model import infer
@@ -7,6 +8,7 @@ import pickle
 
 # -- coding: utf-8 --
 app = Flask(__name__)
+CORS(app)
 app.config['JSON_AS_ASCII'] = False
 
 # load data
