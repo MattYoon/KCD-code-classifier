@@ -3,6 +3,7 @@
 
 ## 데모
 [데모 바로가기](http://203.252.166.40:3000/)
+[데모 영상](https://www.youtube.com/watch?v=5u6J5xErUPs&ab_channel=Yoon%27sProgramming)
 
 
 ## 서버 실행 명령어
