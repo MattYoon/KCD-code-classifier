@@ -8,8 +8,5 @@
 [데모 영상](https://www.youtube.com/watch?v=5u6J5xErUPs&ab_channel=Yoon%27sProgramming)
 
 
-## 서버 실행 명령어
-`~/KCD-code-classifier`에서 `python -m demo.server.server`실행
-
 ## 모델 구조
 ![alt text](https://github.com/MattYoon/KCD-code-classifier/blob/main/model.jpg?raw=true)
